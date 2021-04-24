@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 align="center">Список вакансий</h1>
+{% if current_user.is_authenticated %}
+    <a href="/create_job" class="btn btn-secondary">Новая вакансия</a>
+{% endif %}
+<div class="list-group">
+  {% for item in mas %}
+    <a href="/job_view/{{ item.id }}" class="list-group-item list-group-item-action">
+    <h5 class="mb-1">{{ item.title }}</h5>
+    <small>{{ item.start_date }}</small>
+    <p class="mb-1">{{ item.description[:100] }}</p>
+    <p class="mb-1">Оплата: {{ item.pay }} рублей</p>
+      {% if item.image != '0' %}
+    <img src="{{ url_for('static', filename='users_imgs/job_imgs/{}'.format(item.image)) }}" width="500" class="img-thumbnail" alt="error while loading picture">
+      {% endif %}
+    {% if current_user.is_authenticated and (current_user.id == item.director or current_user.id == 1) %}
+        <a href="/job_edit/{{ item.id }}" class="btn btn-warning">
+            Изменить
+        </a>
+        <a href="/delete_job/{{ item.id }}" class="btn btn-success">
+            Удалить
+        </a>
+    {% endif %}
+  </a>
+    <p>Работодатель - <a href="/user/{{ item.director }}"> {{ item.directorref.name }} {{ item.directorref.surname }} </a></p>
+{% endfor %}
+</div>
+{% endblock %}
