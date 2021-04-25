@@ -13,6 +13,5 @@ association_table = sqlalchemy.Table('association', SqlAlchemyBase.metadata,
 class Chat(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'chats'
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    usersids = [sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id'))]
+    usersids = sqlalchemy.Column(sqlalchemy.String)
     text = sqlalchemy.Column(sqlalchemy.Text)
-    start_date = sqlalchemy.Column(sqlalchemy.DateTime)

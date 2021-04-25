@@ -28,9 +28,11 @@
     {{ user.how_to_contact }}
     </div>
   </div>
-<a href="/chat/{{ current_user.id }}&{{ user.id }}">Написать сообщение</a><br>
+{% if not user.id == current_user.id %}
+<a href="/chat/{{ user.id }}">Написать сообщение</a><br>
 <a href="/cabinet/{{ user.id }}/offers">Объявления пользователя</a><br>
 <a href="/cabinet/{{ user.id }}/jobs">Вакансии пользователя</a><br>
+{% endif %}
 {% else %}
 <h2>Данный пользователь не существует</h2>
 {% endif %}

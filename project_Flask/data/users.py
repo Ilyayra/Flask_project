@@ -17,7 +17,6 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     how_to_contact = sqlalchemy.Column(sqlalchemy.Text)
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
     modified_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
-    chats = orm.relation("Chat", secondary="association", backref="users")
     jobs = orm.relation('Jobs', back_populates='directorref')
     sells = orm.relation('Sell', back_populates='sellerref')
 

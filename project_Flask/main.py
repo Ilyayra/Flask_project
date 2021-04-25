@@ -6,6 +6,7 @@ from data.users import User
 from data.sell import Sell
 from data.jobs import Jobs
 from data.chat import Chat
+from forms.chat import ChatForm
 from forms.change_password import PasswordForm
 from forms.cabinet import CabinetForm
 import datetime
@@ -16,7 +17,6 @@ from forms.job import JobForm
 from forms.sell import SellForm
 from flask_restful import abort, Api
 import api as bapi
-
 
 app = Flask(__name__)
 api = Api(app)
@@ -91,7 +91,7 @@ def job_delete(id):
     return redirect('/jobs')
 
 
-@app.route('/create_job',  methods=['GET', 'POST'])
+@app.route('/create_job', methods=['GET', 'POST'])
 @login_required
 def add_job():
     form = JobForm()
@@ -116,7 +116,7 @@ def add_job():
     return render_template('job.html', form=form)
 
 
-@app.route('/create_offer',  methods=['GET', 'POST'])
+@app.route('/create_offer', methods=['GET', 'POST'])
 @login_required
 def add_off():
     form = SellForm()
@@ -278,6 +278,47 @@ def ones_cabinet(user_id):
     return render_template('ones_cabinet.html', user=user)
 
 
+@app.route('/chat/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def chat(user_id):
+    session = db_session.create_session()
+    chat = session.query(Chat).filter((Chat.usersids == f'{current_user.id},{user_id}') |
+                                      (Chat.usersids == f'{user_id},{current_user.id}')).first()
+    if not chat:
+        chat = Chat()
+        chat.usersids = str(current_user.id) + ',' + str(user_id)
+        chat.text = ''
+    user = session.query(User).filter(User.id == user_id).first()
+    form = ChatForm()
+    if form.validate_on_submit():
+        if '@^&' in form.message.data or '$%$' in form.message.data:
+            return render_template('chat.html', text=chat.text, form=form, user=
+                                   {'name': user.name, 'surname': user.surname, 'id': user_id},
+                                   message='сообщение содержит недопустимую комбинацию символов @^& или $%$')
+        print(form.message.data)
+        chat.text += f'@^&{current_user.id}$%$' + form.message.data + "@^&"
+        print(chat.text)
+        session.merge(chat)
+        session.commit()
+    return render_template('chat.html', text=chat.text, form=form, user=
+                           {'name': user.name, 'surname': user.surname, 'id': user_id})
+
+
+@app.route('/chats')
+@login_required
+def chats():
+    session = db_session.create_session()
+    chats = session.query(Chat).filter((Chat.usersids.like(f'%,{current_user.id}')) |
+                                       (Chat.usersids.like(f'{current_user.id},%'))).all()
+    mas = []
+    for chat in chats:
+        users = chat.usersids.split(',')
+        del users[users.index(str(current_user.id))]
+        user = session.query(User).filter(User.id == int(users[0])).first()
+        mas.append((user.id, user.surname, user.name))
+    return render_template('chats.html', mas=mas)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -334,7 +375,8 @@ def main():
 
 
 app.jinja_env.globals.update(url_for=url_for)
-
+app.jinja_env.globals.update(int=int)
+app.jinja_env.globals.update(str=str)
 
 if __name__ == '__main__':
     main()

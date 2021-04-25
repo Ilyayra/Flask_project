@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 align="center">Ваши чаты</h1>
+<div class="list-group">
+  {% for chat in mas %}
+  <a href="/chat/{{ chat[0] }}" class="list-group-item list-group-item-action">
+    Чат с пользователем {{ chat[1] }} {{ chat[2] }}
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}

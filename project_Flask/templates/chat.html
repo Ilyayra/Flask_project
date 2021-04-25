@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 align="center"> Чат с пользователем {{ user.surname }} {{ user.name }}</h1>
+<div data-bs-spy="scroll" data-bs-offset="0" tabindex="0">
+    {% if text %}
+    {% for mes in text.split('@^&') %}
+    {% if str(current_user.id) == mes.split('$%$')[0] %}
+        <h5>{{ current_user.surname }} {{ current_user.name }}</h5>
+        <p>{{ mes.split('$%$')[1] }}</p>
+    {% elif str(user.id) == mes.split('$%$')[0] %}
+        <h5>{{ user.surname }} {{ user.name }}</h5>
+        <p>{{ mes.split('$%$')[1] }}</p>
+    {% endif %}
+    {% endfor %}
+    {% else %}
+    <h4>У Вас пока нет сообщений с пользователем</h4>
+    {% endif %}
+</div>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+  {{ form.message.label }}<br>
+  {{ form.message(class="form-control") }}<br>
+  {% for error in form.message.errors %}
+      <p content="alert alert-danger" role="alert">
+          {{ error }}
+      </p>
+  {% endfor %}
+    {{ message }}
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+</form>
+{% endblock %}
