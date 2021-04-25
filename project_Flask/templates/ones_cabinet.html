@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<title>Личный кабинет</title>
+<h1 align="center">Личный кабинет пользователя {{ user.id }}</h1>
+{% if user %}
+  <div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">Имя пользователя</label>
+    <div class="col-sm-10">
+      {{ user.name }}
+    </div>
+  </div>
+  <div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">Фамилия пользователя</label>
+    <div class="col-sm-10">
+      {{ user.surname }}
+    </div>
+  </div>
+  <div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">Адрес пользователя</label>
+    <div class="col-sm-10">
+      {{ user.surname }}
+    </div>
+  </div>
+  <div class="mb-3 row">
+    <label class="col-sm-2 col-form-label">Контактные данные пользователя</label>
+    <div class="col-sm-10">
+    {{ user.how_to_contact }}
+    </div>
+  </div>
+<a href="/chat/{{ current_user.id }}&{{ user.id }}">Написать сообщение</a><br>
+<a href="/cabinet/{{ user.id }}/offers">Объявления пользователя</a><br>
+<a href="/cabinet/{{ user.id }}/jobs">Вакансии пользователя</a><br>
+{% else %}
+<h2>Данный пользователь не существует</h2>
+{% endif %}
+{% endblock %}

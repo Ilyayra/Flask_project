@@ -1,37 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<title>Регистрация</title>
-<h1>Регистрация</h1>
+<title>Личный кабинет</title>
+<h1 align="center">Личный кабинет</h1>
 <form action="" method="post">
     {{ form.hidden_tag() }}
-    <p>
-        {{ form.email.label }}<br>
-        {{ form.email(class="form-control", type="email") }}<br>
-        {% for error in form.email.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.password.label }}<br>
-        {{ form.password(class="form-control", type="password") }}<br>
-        {% for error in form.password.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.repeat_password.label }}<br>
-        {{ form.repeat_password(class="form-control", type="password") }}<br>
-        {% for error in form.repeat_password.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
     <p>
         {{ form.surname.label }}<br>
         {{ form.surname(class="form-control") }}<br>
@@ -40,7 +13,6 @@
                 {{ error }}
             </p>
         {% endfor %}
-    </p>
     <p>
         {{ form.name.label }}<br>
         {{ form.name(class="form-control") }}<br>
@@ -49,7 +21,6 @@
                 {{ error }}
             </p>
         {% endfor %}
-    </p>
     <p>
         {{ form.address.label }}<br>
         {{ form.address(class="form-control") }}<br>
@@ -58,7 +29,6 @@
                 {{ error }}
             </p>
         {% endfor %}
-    </p>
     <p>
         {{ form.how_to_contact.label }}<br>
         {{ form.how_to_contact(class="form-control") }}<br>
@@ -67,8 +37,8 @@
                 {{ error }}
             </p>
         {% endfor %}
-    </p>
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     {{message}}
 </form>
+<a href="/cabinet/change_password">Изменить пароль</a>
 {% endblock %}

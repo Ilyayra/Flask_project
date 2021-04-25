@@ -22,8 +22,8 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-lg-end">
                     <li><a class="dropdown-item" href="/cabinet">Моя страница</a></li>
-                    <li><a class="dropdown-item" href="/offers">Мои объявления</a></li>
-                    <li><a class="dropdown-item" href="/vacations">Мои вакансии</a></li>
+                    <li><a class="dropdown-item" href="/cabinet/{{ current_user.id }}/offers">Мои объявления</a></li>
+                    <li><a class="dropdown-item" href="/cabinet/{{ current_user.id }}/jobs">Мои вакансии</a></li>
                     <li><a class="dropdown-item" href="/logout">Выйти</a></li>
                  </ul>
                 </div>

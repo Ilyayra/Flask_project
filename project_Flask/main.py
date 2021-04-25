@@ -6,6 +6,8 @@ from data.users import User
 from data.sell import Sell
 from data.jobs import Jobs
 from data.chat import Chat
+from forms.change_password import PasswordForm
+from forms.cabinet import CabinetForm
 import datetime
 from forms.user import RegisterForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -219,10 +221,61 @@ def edit_offer(id):
     return render_template('offer.html', form=form)
 
 
-@app.route('/user')
+@app.route('/cabinet', methods=['GET', 'POST'])
 @login_required
 def cabinet():
-    return render_template('cabinet.html')
+    form = CabinetForm()
+    if request.method == 'GET':
+        form.name.data = current_user.name
+        form.surname.data = current_user.surname
+        form.address.data = current_user.address
+        form.how_to_contact.data = current_user.how_to_contact
+    elif form.validate_on_submit():
+        session = db_session.create_session()
+        user = session.query(User).filter(User.id == current_user.id).first()
+        user.name = form.name.data
+        user.surname = form.surname.data
+        user.address = form.address.data
+        user.how_to_contact = form.how_to_contact.data
+        session.commit()
+        user = session.query(User).filter(User.id == current_user.id).first()
+        login_user(user)
+        return redirect('/success')
+    return render_template('cabinet.html', form=form)
+
+
+@app.route('/cabinet/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = PasswordForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        user = session.query(User).filter(User.id == current_user.id).first()
+        if user.check_password(form.old_password.data) and form.password.data == form.repeat_password.data:
+            user.set_password(form.password.data)
+            session.commit()
+            return redirect('/success')
+        return render_template('change_password.html', form=form, message='Неверный пароль')
+    return render_template('change_password.html', form=form)
+
+
+@app.route('/cabinet/<int:user_id>/offers')
+def user_offers(user_id):
+    session = db_session.create_session()
+    return render_template('off_index.html', mas=session.query(Sell).filter(Sell.seller == user_id).all())
+
+
+@app.route('/cabinet/<int:user_id>/jobs')
+def user_jobs(user_id):
+    session = db_session.create_session()
+    return render_template('job_index.html', mas=session.query(Jobs).filter(Jobs.director == user_id).all())
+
+
+@app.route('/cabinet/<int:user_id>')
+def ones_cabinet(user_id):
+    session = db_session.create_session()
+    user = session.query(User).filter(User.id == user_id).first()
+    return render_template('ones_cabinet.html', user=user)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -263,6 +316,7 @@ def registration():
         user.address = form.address.data
         user.set_password(form.password.data)
         user.create_date = datetime.datetime.now()
+        user.how_to_contact = form.how_to_contact.data
         session.add(user)
         session.commit()
         session.close()
