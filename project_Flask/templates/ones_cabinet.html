@@ -19,7 +19,7 @@
   <div class="mb-3 row">
     <label class="col-sm-2 col-form-label">Адрес пользователя</label>
     <div class="col-sm-10">
-      {{ user.surname }}
+      {{ user.address }}
     </div>
   </div>
   <div class="mb-3 row">
@@ -29,7 +29,9 @@
     </div>
   </div>
 {% if not user.id == current_user.id %}
+{% if current_user.is_authenticated %}
 <a href="/chat/{{ user.id }}">Написать сообщение</a><br>
+{% endif %}
 <a href="/cabinet/{{ user.id }}/offers">Объявления пользователя</a><br>
 <a href="/cabinet/{{ user.id }}/jobs">Вакансии пользователя</a><br>
 {% endif %}
